@@ -1,3 +1,6 @@
+use core::panic;
+use std::ptr::null;
+
 struct Ticket {
     title: String,
     description: String,
@@ -18,7 +21,20 @@ impl Ticket {
     // as well as some `String` methods. Use the documentation of Rust's standard library
     // to find the most appropriate options -> https://doc.rust-lang.org/std/string/struct.String.html
     fn new(title: String, description: String, status: String) -> Self {
-        todo!();
+        if status == "To-Do" || status == "In Progress" || status == "Done" {
+            if !title.is_empty() && !description.is_empty(){
+                if title.len() > 50{
+                    panic!("Title cannot be longer than 50 bytes")
+                }
+                if description.len() > 500{
+                    panic!("Description cannot be longer than 500 bytes")
+                }
+            } else {
+                panic!("Title & Desc cannot be empty")
+            }
+        } else {
+            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed")
+        }
         Self {
             title,
             description,
@@ -33,13 +49,13 @@ mod tests {
     use common::{overly_long_description, overly_long_title, valid_description, valid_title};
 
     #[test]
-    #[should_panic(expected = "Title cannot be empty")]
+    #[should_panic(expected = "Title & Desc cannot be empty")]
     fn title_cannot_be_empty() {
         Ticket::new("".into(), valid_description(), "To-Do".into());
     }
 
     #[test]
-    #[should_panic(expected = "Description cannot be empty")]
+    #[should_panic(expected = "Title & Desc cannot be empty")]
     fn description_cannot_be_empty() {
         Ticket::new(valid_title(), "".into(), "To-Do".into());
     }
